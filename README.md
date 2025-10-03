@@ -1,0 +1,1 @@
+-A project that tests how far someone with no coding experience can advance their idea using only AI and publicly available resources.
