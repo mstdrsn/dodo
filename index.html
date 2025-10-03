@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Görev Yönetim Uygulaması</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Uygulama stilleri -->
+  <link href="./styles.css" rel="stylesheet">
+</head>
+<body>
+  <h1 class="mb-4">Görev Yönetim Uygulaması</h1>
+
+  <!-- ÜST FORM -->
+  <div id="taskForm" class="container">
+    <div class="row g-3 justify-content-center align-items-stretch">
+      <div class="col-12 col-md-3">
+        <input type="text" id="taskTitle" class="form-control rounded-pill" placeholder="Başlık">
+      </div>
+      <div class="col-12 col-md-3">
+        <input type="text" id="taskDesc" class="form-control rounded-pill" placeholder="Açıklama">
+      </div>
+      <div class="col-6 col-md-2">
+        <!-- Tip dönüşümü app.js içinde yönetiliyor -->
+        <input type="text" id="taskDate" class="form-control rounded-pill" placeholder="Son Gün Ekle">
+      </div>
+
+      <!-- Bootstrap Öncelik Dropdown (yukarı açılacak, scroll’u tetiklemez) -->
+      <div class="col-6 col-md-2">
+        <div class="dropup dropdown w-100" id="priorityDropdown">
+          <button
+            class="dropdown-toggle btn btn-outline-secondary rounded-pill w-100 d-flex justify-content-between align-items-center"
+            type="button"
+            data-bs-toggle="dropdown"
+            data-bs-display="static"
+            data-bs-container="body"
+            data-bs-auto-close="outside"
+            data-bs-offset="0,8"
+            aria-expanded="false">
+            <span id="prioritySelectedLabel" class="text-truncate">Öncelik: Yok</span>
+          </button>
+
+          <ul class="dropdown-menu w-100">
+            <li><a class="dropdown-item" href="#" data-value="none"><span class="badge text-bg-light">Yok</span></a></li>
+            <li><a class="dropdown-item" href="#" data-value="low"><span class="badge text-bg-success">Düşük</span></a></li>
+            <li><a class="dropdown-item" href="#" data-value="medium"><span class="badge text-bg-warning">Orta</span></a></li>
+            <li><a class="dropdown-item" href="#" data-value="high"><span class="badge text-bg-danger">Yüksek</span></a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Kategori Çoklu Seçim Dropdown -->
+      <div class="col-12 col-md-2">
+        <div class="dropdown multi-dropdown w-100" id="categoryDropdown">
+          <button
+            class="dropdown-toggle btn d-flex justify-content-between align-items-center rounded-pill"
+            type="button"
+            data-bs-toggle="dropdown"
+            data-bs-auto-close="outside"
+            aria-expanded="false">
+            <!-- Kaydırılabilir chip alanı -->
+            <div class="chips flex-grow-1 d-flex align-items-center" tabindex="-1"></div>
+            <!-- Chip yoksa placeholder -->
+            <span class="chips-placeholder text-muted ms-2">Kategori Seç</span>
+          </button>
+          <!-- Seçim menüsü -->
+          <div class="dropdown-menu p-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3 justify-content-center">
+      <div class="col-auto">
+        <button id="manageCategoriesBtn" type="button" class="btn btn-outline-secondary rounded-pill">
+          <i class="bi bi-tags-fill me-1"></i> Kategorileri Yönet
+        </button>
+      </div>
+      <div class="col-auto">
+        <button id="addTaskBtn" type="button" class="btn btn-success rounded-pill">
+          <i class="bi bi-plus-circle-fill me-1"></i> Görev Ekle
+        </button>
+      </div>
+
+      <div class="col-auto ms-auto">
+        <div class="btn-group">
+          <button class="btn btn-outline-primary dropdown-toggle btn-sm rounded-pill" data-bs-toggle="dropdown" aria-expanded="false">Sırala</button>
+          <ul class="dropdown-menu dropdown-menu-end" id="sortMenu">
+            <li><a class="dropdown-item" href="#" data-sort="date-asc">Son Tarih ↑</a></li>
+            <li><a class="dropdown-item" href="#" data-sort="date-desc">Son Tarih ↓</a></li>
+            <li><a class="dropdown-item" href="#" data-sort="left-asc">Kalan Gün ↑</a></li>
+            <li><a class="dropdown-item" href="#" data-sort="left-desc">Kalan Gün ↓</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LİSTELER -->
+  <div class="container">
+    <!-- Aktif -->
+    <div class="toggleHeader" id="activeHeader">
+      <div class="header-left">
+        <span class="mini-counter" id="activeCountBox">Aktif: 0</span>
+        <span>Aktif Görevler</span>
+      </div>
+      <div class="header-right">
+        <button id="activeSelectAll"  class="btn btn-outline-light btn-sm rounded-pill">Tümünü Seç</button>
+        <button id="activeClearSel"  class="btn btn-outline-light btn-sm rounded-pill">Temizle</button>
+        <button id="activeCompleteBtn" class="btn btn-primary btn-sm icon-btn rounded-pill" data-bs-toggle="tooltip" title="Seçilenleri Tamamla">
+          <i class="bi bi-check-circle-fill"></i>
+        </button>
+        <button id="activeDeleteBtn" class="btn btn-danger btn-sm icon-btn rounded-pill" data-bs-toggle="tooltip" title="Seçilenleri Sil">
+          <i class="bi bi-trash-fill"></i>
+        </button>
+        <i id="activeToggle" class="bi bi-caret-down-fill toggler-icon"></i>
+      </div>
+    </div>
+
+    <div id="activeSection">
+      <div class="headerRow">
+        <div class="text-center">Seç</div><div>Başlık</div><div>Kategori</div>
+        <div>Öncelik</div><div>Son Gün</div><div>Kalan Gün</div><div>İşlemler</div>
+      </div>
+      <ul id="activeList" class="taskList list-unstyled"></ul>
+    </div>
+
+    <!-- Tamamlanan -->
+    <div class="toggleHeader" id="doneHeader">
+      <div class="header-left">
+        <span class="mini-counter" id="doneCountBox">Tamamlanan: 0</span>
+        <span>Tamamlananlar</span>
+      </div>
+      <div class="header-right">
+        <button id="doneSelectAll"  class="btn btn-outline-light btn-sm rounded-pill">Tümünü Seç</button>
+        <button id="doneClearSel"  class="btn btn-outline-light btn-sm rounded-pill">Temizle</button>
+        <button id="doneUncompleteBtn" class="btn btn-primary btn-sm icon-btn rounded-pill" data-bs-toggle="tooltip" title="Seçilenleri Tamamlanmadı İşaretle">
+          <i class="bi bi-arrow-counterclockwise"></i>
+        </button>
+        <button id="doneDeleteBtn" class="btn btn-danger btn-sm icon-btn rounded-pill" data-bs-toggle="tooltip" title="Seçilenleri Sil">
+          <i class="bi bi-trash-fill"></i>
+        </button>
+        <i id="doneToggle" class="bi bi-caret-down-fill toggler-icon"></i>
+      </div>
+    </div>
+
+    <div id="doneSection">
+      <div class="headerRow">
+        <div class="text-center">Seç</div><div>Başlık</div><div>Kategori</div>
+        <div>Öncelik</div><div>Son Gün</div><div>Kalan Gün</div><div>İşlemler</div>
+      </div>
+      <ul id="doneList" class="taskList list-unstyled"></ul>
+    </div>
+  </div>
+
+  <!-- Kategorileri Yönet Modal -->
+  <div class="modal fade" id="manageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title">Kategorileri Yönet</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+        </div>
+        <div class="modal-body">
+          <div id="categoryList" class="categoryList"></div>
+          <div class="newCatRow mt-3">
+            <input type="text" id="newCategoryName" class="form-control rounded-pill" placeholder="Yeni kategori adı">
+            <div class="mini-palette" id="miniPalette"></div>
+            <button class="btn btn-success rounded-pill" id="addCategoryBtn" type="button">Ekle</button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal" type="button">Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Düzenle Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content rounded-4">
+        <form id="editForm">
+          <div class="modal-header">
+            <h5 class="modal-title">Görev Düzenle</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat" id="closeEditBtn"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-12">
+                <label for="editTitle" class="form-label">Başlık</label>
+                <input type="text" id="editTitle" class="form-control rounded-pill" required>
+              </div>
+              <div class="col-12">
+                <label for="editDesc" class="form-label">Açıklama</label>
+                <input type="text" id="editDesc" class="form-control rounded-pill">
+              </div>
+              <div class="col-md-4">
+                <label for="editDate" class="form-label">Son Gün</label>
+                <input type="date" id="editDate" class="form-control rounded-pill">
+              </div>
+              <div class="col-md-4">
+                <label for="editPriority" class="form-label">Öncelik</label>
+                <select id="editPriority" class="form-select rounded-pill">
+                  <option value="none">Yok</option>
+                  <option value="low">Düşük</option>
+                  <option value="medium">Orta</option>
+                  <option value="high">Yüksek</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="editReminder" class="form-label">Hatırlatıcı (Tarih-Saat)</label>
+                <input type="datetime-local" id="editReminder" class="form-control rounded-pill">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Kategoriler</label>
+                <div class="dropdown multi-dropdown w-100" id="editCategoryDropdown">
+                  <button
+                    class="dropdown-toggle btn d-flex justify-content-between align-items-center rounded-pill"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    data-bs-auto-close="outside"
+                    aria-expanded="false">
+                    <div class="chips flex-grow-1 d-flex align-items-center" tabindex="-1"></div>
+                    <span class="chips-placeholder text-muted ms-2">Kategori Seç</span>
+                  </button>
+                  <div class="dropdown-menu p-2"></div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label class="form-label mb-0">Alt Görevler</label>
+                  <small id="subtaskProgress" class="text-muted"></small>
+                </div>
+                <div id="subtaskList" class="mt-2"></div>
+                <div class="input-group mt-2">
+                  <input type="text" id="newSubtaskText" class="form-control rounded-pill" placeholder="Alt görev ekle...">
+                  <button class="btn btn-outline-primary rounded-pill" type="button" id="addSubtaskBtn"><i class="bi bi-plus-lg"></i></button>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Yorumlar</label>
+                <div id="commentList" class="list-group mb-2 rounded-3"></div>
+                <div class="input-group">
+                  <input type="text" id="newCommentText" class="form-control rounded-pill" placeholder="Yorum yaz...">
+                  <button class="btn btn-outline-secondary rounded-pill" type="button" id="addCommentBtn"><i class="bi bi-chat-right-dots-fill"></i></button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal" type="button" id="cancelEditBtn">Vazgeç</button>
+            <button class="btn btn-primary rounded-pill" type="submit" id="saveEditBtn">Kaydet</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alt Görevler Modal -->
+  <div class="modal fade" id="subtasksModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title">Alt Görevler</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+        </div>
+        <div class="modal-body">
+          <h1 id="subtasksModalTitle" class="mb-3"></h1>
+          <div class="d-flex align-items-center mb-3">
+            <small id="subtasksModalProgressText" class="text-muted"></small>
+            <div class="progress flex-grow-1 ms-3" style="height:8px;">
+              <div id="subtasksModalProgressBar" class="progress-bar" role="progressbar" style="width:0%" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+          <div id="subtasksModalList" class="list-group rounded-3"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal" type="button">Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Yorumlar Modal -->
+  <div class="modal fade" id="commentsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title">Yorumlar</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+        </div>
+        <div class="modal-body">
+          <h1 id="commentsModalTitle" class="mb-3"></h1>
+
+          <div id="commentsModalList" class="list-group rounded-3 mb-3"></div>
+
+          <div class="input-group">
+            <input type="text" id="commentsModalInput" class="form-control rounded-pill" placeholder="Yorum yaz ve Enter'a bas...">
+            <button class="btn btn-outline-secondary rounded-pill" type="button" id="commentsModalAddBtn">
+              <i class="bi bi-chat-right-dots-fill"></i> Ekle
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal" type="button">Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gizli color input & toast alanı -->
+  <input type="color" id="hiddenColorPicker" style="position:fixed; left:-9999px; top:-9999px;" />
+  <div id="toastArea"></div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Uygulama JS -->
+  <script src="./app.js"></script>
+</body>
+</html>

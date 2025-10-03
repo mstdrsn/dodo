@@ -1,0 +1,553 @@
+body { 
+  background: linear-gradient(135deg, #f0f4f8, #e0e7ff); 
+  padding: 40px; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+h1 { 
+  text-align: center; 
+  color: #4f46e5; 
+  font-weight: 700; 
+  margin-bottom: 40px; 
+  text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.mini-counter {
+  font-weight: 600; 
+  font-size: 0.9rem; 
+  padding: 4px 10px; 
+  border-radius: 20px; 
+  background: #ffffff; 
+  color: #4f46e5; 
+  border: 1px solid #c7d2fe;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.toggleHeader {
+  background: linear-gradient(90deg, #6366f1, #4f46e5); 
+  color: #fff; 
+  padding: 12px 16px; 
+  border-radius: 16px; 
+  font-weight: 600; 
+  cursor: pointer;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-top: 30px; 
+  margin-bottom: 12px;
+  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.2);
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.icon-btn.btn-sm { padding: 0.3rem 0.6rem; border-radius: 12px; }
+
+.headerRow {
+  display: grid; 
+  grid-template-columns: 68px minmax(280px, 1.8fr) minmax(180px, 1.1fr) 100px 120px 120px 200px;
+  gap: 12px; 
+  background: #e0e7ff; 
+  color: #4f46e5; 
+  padding: 12px; 
+  border-radius: 16px; 
+  font-weight: 600;
+  border: 1px solid #c7d2fe; 
+  margin-bottom: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.taskItem {
+  display: grid; 
+  grid-template-columns: 68px minmax(280px, 1.8fr) minmax(180px, 1.1fr) 100px 120px 120px 200px;
+  gap: 12px; 
+  background: #ffffff; 
+  margin-bottom: 12px; 
+  padding: 14px; 
+  border-radius: 16px; 
+  border: 1px solid #e5e7eb; 
+  align-items: center;
+  opacity: 0; 
+  transform: translateY(12px); 
+  animation: fadeIn 0.4s forwards; 
+  cursor: default; 
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.taskItem:hover { box-shadow: 0 8px 16px rgba(99, 102, 241, 0.15); transform: translateY(-2px); }
+.taskItem.drag-over { outline: 2px dashed #6366f1; }
+.taskItem.dragging { opacity: 0.6; }
+.taskItem .title { font-weight: 700; color: #1f2937; }
+.taskItem .desc { display: none; font-size: 0.95em; color: #6b7280; margin-top: 8px; line-height: 1.5; }
+.taskItem.open .desc { display: block; }
+.done { filter: grayscale(100%); text-decoration: line-through; opacity: 0.7; }
+.badge { font-size: 0.9em; font-weight: 500; border-radius: 20px; padding: 6px 12px; }
+
+.sel-col {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* sola hizala */
+  gap: 8px;                    /* ikon–checkbox arası eşit boşluk */
+  white-space: nowrap;         /* alt satıra inip kaymasın */
+}
+
+.expandBtn {
+  padding: 0.25rem 0.45rem;
+  line-height: 1;
+}
+
+.focused { outline: 2px solid #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); }
+@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+
+.multi-dropdown .dropdown-toggle {
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 8px; 
+  min-height: 48px; 
+  align-items: center;
+  background: #ffffff; 
+  border: 1px solid #d1d5db; 
+  border-radius: 12px; 
+  width: 100%;
+  padding: 8px 12px;
+  transition: border-color 0.2s ease;
+}
+.multi-dropdown .dropdown-toggle:hover { border-color: #6366f1; }
+.multi-dropdown .chips span {
+  background: #6366f1; 
+  color: #fff; 
+  padding: 4px 10px; 
+  border-radius: 20px; 
+  font-size: 0.9em;
+  display: inline-flex; 
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.multi-dropdown .chips span button {
+  background: none; 
+  border: none; 
+  color: #fff; 
+  margin-left: 8px; 
+  cursor: pointer; 
+  font-size: 16px; 
+  line-height: 1;
+}
+.multi-dropdown .dropdown-menu { max-height: 280px; overflow-y: auto; width: 100%; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+
+.categoryList { display: flex; flex-wrap: wrap; gap: 12px; }
+.categoryItem { position: relative; }
+.badge-edit { 
+  display: inline-block; 
+  padding: 8px 16px; 
+  border-radius: 20px; 
+  color: #fff; 
+  font-size: 1em; 
+  cursor: pointer; 
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+  transition: transform 0.2s ease;
+}
+.badge-edit:hover { transform: scale(1.05); }
+.cat-popup {
+  display: none; 
+  position: absolute; 
+  top: 120%; 
+  left: 0; 
+  background: #fff; 
+  border: 1px solid #e5e7eb; 
+  border-radius: 16px;
+  padding: 16px; 
+  width: 280px; 
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15); 
+  z-index: 100;
+}
+.cat-popup input[type="text"] { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 12px; margin-bottom: 12px; }
+
+.color-palette { display: grid; grid-template-columns: repeat(13, 1fr); gap: 10px; margin: 10px 0; }
+.color-option { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s ease; }
+.color-option.selected { border-color: #1f2937; }
+.color-option.custom { position: relative; border-color: #9ca3af; }
+.color-option.custom::after { content: "🎨"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #111827; }
+
+.newCatRow { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+.mini-palette { display: grid; grid-template-columns: repeat(13, 22px); gap: 10px; align-items: center; }
+.mini-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s ease; }
+.mini-dot.selected { border-color: #1f2937; }
+.mini-dot.custom { position: relative; border-color: #9ca3af; }
+.mini-dot.custom::after { content: "🎨"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #111827; }
+
+.picker-popover {
+  position: fixed; 
+  left: 0; 
+  top: 0; 
+  transform: translate(-50%, 8px);
+  background: #fff; 
+  border: 1px solid #e5e7eb; 
+  border-radius: 16px; 
+  padding: 12px; 
+  width: 250px;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15); 
+  z-index: 2005 !important; 
+  animation: fadeIn 0.2s ease;
+}
+.picker-row { display: flex; align-items: center; gap: 10px; }
+.picker-popover input[type="color"] { width: 44px; height: 36px; padding: 0; border: none; background: transparent; }
+.picker-popover input[type="text"] { flex: 1; padding: 10px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px; }
+
+.modal .cat-popup { z-index: 2001; }
+.modal .dropdown-menu { z-index: 2001; }
+
+.subtask-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px dashed #e5e7eb; }
+.subtask-item:last-child { border-bottom: none; }
+
+#toastArea { position: fixed; right: 20px; bottom: 20px; z-index: 3000; }
+
+/* Sürükle-bırak tutamacı (handle) */
+.dragHandle { cursor: grab; }
+.dragHandle:active { cursor: grabbing; }
+
+/* Araya yerleşen gösterge (placeholder) */
+.drop-placeholder {
+  list-style: none;
+  height: 0;
+  margin: 6px 0;
+  border-top: 3px dashed #6366f1;
+  border-radius: 6px;
+}
+
+/* Subtasks modal içi elementler */
+.list-group-item.done-line { text-decoration: line-through; color: #6b7280; }
+
+/* Modalin backdrop üstünde kalmasını garanti et */
+.modal { z-index: 2002; }
+.modal-backdrop { z-index: 2001; }
+
+/* Kategori sütunu: görev satırlarında chip'leri dengeli diz */
+.taskItem > div:nth-child(3) {
+  display: flex;
+  flex-wrap: wrap;            /* Alt alta/yan yana düzgün sarılsın */
+  align-items: center;
+  gap: 8px;                   /* Sağ-sol ve üst-alt aralıklar eşit */
+}
+
+/* Bu sütun içindeki chip'lerin tutarlı kutu modeline geçmesi için */
+.taskItem > div:nth-child(3) .badge {
+  display: inline-flex;       /* Dikey boşluk davranışı tutarlı olsun */
+  margin: 0;                  /* Boşluğu gap veriyor, çifte etki olmasın */
+  line-height: 1;             /* Görsel sıkışmayı azaltır */
+}
+
+/* Görev Satırlarını Genişletmek İçin */
+.expandBtn {
+  padding: 0.25rem 0.45rem; /* küçük, net hedef alan */
+  line-height: 1;
+}
+
+/* 2. kolon: başlık bloğu */
+.taskItem > div:nth-child(2) { 
+  min-width: 0;                /* grid overflow bug’ını önler */
+}
+
+.taskItem .title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;         /* tek satır + üç nokta */
+}
+
+/* Expand (açık) durumunda başlık tümüyle görünsün */
+.taskItem.open {
+  align-items: flex-start;              /* Çok satırlı başlıkta dikey hizalama düzgün olsun */
+}
+
+.taskItem.open .d-flex.align-items-center {
+  flex-wrap: wrap;                      /* Rozetler/ikonlar ikinci satıra inebilsin */
+  row-gap: 4px;                         /* Satırlar arası küçük boşluk */
+}
+
+.taskItem.open .title {
+  white-space: normal;                  /* ... (ellipsis) yerine satır sarımı */
+  overflow: visible;                    /* Kesmeyi kaldır */
+  text-overflow: unset;                 /* Ellipsis’i kapat */
+  flex: 1 1 100%;                       /* Başlık ilk satırın tamamını kaplasın */
+}
+
+/* Expand/collapse ikon mikro animasyonu */
+.expandBtn .bi {
+  transition: transform 0.16s ease, opacity 0.16s ease;
+}
+
+.expandBtn.swapping .bi {
+  transform: scale(0.82) rotate(-8deg);
+  opacity: 0.25;
+}
+
+/* Açıkken simge hafif döner, göz daha rahat algılar */
+.taskItem.open .expandBtn .bi {
+  transform: rotate(180deg) scale(1.02);
+}
+
+.taskItem .sel-col {
+  display: flex;
+  align-items: center;   /* buton ve checkbox kendi içinde dikey ortalı */
+  gap: 8px;
+  align-self: center;    /* grid item olarak hücrede dikey ortala */
+}
+
+.taskItem.open .sel-col {
+  align-self: center;    /* expand olunca da ortada kal */
+}
+
+.expandBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0.25rem 0.45rem;
+}
+
+#activeToggle, #doneToggle {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  border: none;
+  background: transparent;
+  /* Renk başlık metnini miras alsın (zaten beyaz): */
+  color: inherit;
+}
+
+/* Başlık okları: yumuşak dönüş */
+.toggler-icon {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  transition: transform 160ms ease; /* akıcı geçiş */
+  transform-origin: 50% 50%;
+  font-size: 1.05rem; /* isteğe bağlı: okunabilirlik */
+  color: inherit;     /* buton rengi/border yok */
+}
+
+.toggler-icon.collapsed {
+  /* Down (▼) ikonunu 90° sola/CCW döndürürsek ► olur */
+  transform: rotate(-90deg);
+}
+
+/* Drag “hayalet” önizleme */
+.drag-ghost {
+  position: absolute;         /* ekranda görünmeyecek yerde tutulur */
+  left: -9999px; 
+  top: -9999px;
+  opacity: 0.85;              /* hafif şeffaf */
+  border-radius: 16px;        /* taskItem ile aynı */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.20);
+  pointer-events: none;
+  background: #fff;           /* satır beyazsa net görünsün */
+}
+/* Öncelik dropdown butonunu, Kategori butonuyla aynı stile çek */
+#priorityDropdown > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 48px;
+
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 8px 12px;
+  color: #595c5f;
+  box-shadow: none;
+}
+
+#priorityDropdown > button:hover {
+  border-color: #6366f1; /* Kategori butonundaki hover gibi */
+}
+
+#priorityDropdown > button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+
+/* Dropdown menüsünü de multi-dropdown ile eşitle (gölge/radius) */
+#priorityDropdown .dropdown-menu {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* Üst formdaki tüm input/select ve dropdown butonlarının yüksekliğini eşitle */
+#taskForm .form-control,
+#taskForm .form-select {
+  height: 48px;
+}
+
+/* Öncelik ve Kategori dropdown butonları */
+#taskForm #priorityDropdown > button,
+#taskForm #categoryDropdown > button,
+#taskForm .multi-dropdown .dropdown-toggle {
+  height: 48px;       /* kesin 48px */
+  min-height: 48px;   /* olası min-height kurallarını bastır */
+  display: flex; 
+  align-items: center; /* içerik dikey ortalı kalsın */
+}
+
+/* Üst formdaki tüm tek satır input/select içeriklerini 48px içinde dikey ortala */
+#taskForm .form-control,
+#taskForm .form-select {
+  height: 48px;
+  line-height: 48px;     /* metni dikeyde ortaya getirir */
+  padding-top: 0;
+  padding-bottom: 0;
+  /* yatay hizayı bozmayalım diye padding-left/right kalsın (Bootstrap default) */
+}
+
+/* Tarayıcı uyumluluğu: date & datetime-local için line-height normal kalsın */
+#taskForm input[type="date"].form-control,
+#taskForm input[type="datetime-local"].form-control {
+  line-height: normal;
+  padding-top: 10px;     /* yine de ortalanmış görünür */
+  padding-bottom: 10px;
+}
+
+/* Öncelik ve Kategori dropdown butonları içeriklerini dikey ortala */
+#taskForm #priorityDropdown > button,
+#taskForm #categoryDropdown > button,
+#taskForm .multi-dropdown .dropdown-toggle {
+  height: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;   /* dikey merkez */
+}
+
+/* Kategori butonu içindeki chip’ler tam ortalansın */
+#taskForm #categoryDropdown .chips {
+  display: flex;
+  align-items: center;   /* dikey merkez */
+  gap: 8px;
+}
+
+#categoryDropdown .chips:empty::before {
+  content: "Kategori Seç";
+  color: #595c5f;
+  font-weight: 400;
+}
+
+/* Kategori dropdown içinde chips alanı: yatay scroll + scrollbar gizli */
+#categoryDropdown > button {
+  position: relative;
+  overflow: hidden;         /* içerik buton sınırında kesilsin */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#categoryDropdown .chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;        /* tek satırda akış */
+  gap: 8px;
+  min-width: 0;             /* grid/flex taşmalarını önler */
+  flex: 1 1 auto;           /* buton içindeki alanı kullansın */
+  overflow-x: auto;
+  overflow-y: hidden;
+  -ms-overflow-style: none; /* IE/Edge eski */
+  scrollbar-width: none;    /* Firefox */
+  cursor: grab;
+  user-select: none;
+}
+#categoryDropdown .chips::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+/* Chip içerikleri tek satır kalsın */
+#categoryDropdown .chips > span {
+  white-space: nowrap;
+}
+
+/* Sürükleme hissiyatı */
+#categoryDropdown .chips.dragging { cursor: grabbing; }
+
+/* F A D E  — yalnızca overflow varsa aktif olsun */
+#categoryDropdown.is-overflowing .chips {
+  -webkit-mask-image: linear-gradient(to right, black 85%, transparent);
+  mask-image: linear-gradient(to right, black 85%, transparent);
+}
+
+/* Sona kadar kayınca fade gereksiz; istersen kapat */
+#categoryDropdown.is-overflowing.at-end .chips {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+/* Kategori dropdown butonu: caret için yer ayır ve görünür tut */
+#categoryDropdown > button.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  overflow: hidden;       /* chip taşmasını kesiyoruz */
+  padding-right: 28px;    /* caret için güvenli tampon alan */
+}
+
+/* ::after caret'i flex öğe gibi davranıp yer kaplasın */
+#categoryDropdown > button.dropdown-toggle::after {
+  flex: 0 0 auto;
+  margin-left: 8px;       /* chiplerden ayrışsın */
+}
+
+/* Chip şeridi buton içinde kalan alanı kullansın, taşmayı gizlesin */
+#categoryDropdown .chips {
+  flex: 1 1 auto;
+  min-width: 0;           /* taşma bug'unu önler */
+  overflow-x: auto;       /* (zaten eklemiştik) */
+}
+
+/* Kategori butonu: oku (caret) her zaman görünür ve dikey ortalı tut */
+#categoryDropdown > button.dropdown-toggle {
+  position: relative;
+  padding-right: 32px;   /* okun kaplayacağı alanı ayır */
+  overflow: hidden;      /* chips taşarsa buton sınırında kesilsin */
+}
+
+/* Bootstrap'in .dropdown-toggle::after okunu sağa sabitle */
+#categoryDropdown > button.dropdown-toggle::after {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);   /* dikey ortalama */
+  margin-left: 0 !important;     /* Bootstrap’in varsayılan boşluğunu iptal et */
+  z-index: 2;                    /* chips üstünde kalsın */
+}
+
+/* Chips alanı: esnek, yatay kaydırılabilir, caret'e yer bıraksın */
+#categoryDropdown .chips {
+  flex: 1 1 auto;     /* buton içinde kalan alanı kullan */
+  min-width: 0;       /* overflow buglarını önler */
+  overflow-x: auto;   /* yatay kaydırma */
+  overflow-y: hidden;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#categoryDropdown .chips > span { white-space: nowrap; }  /* chipler tek satır kalsın */
+
+/* Öncelik menüsü: sağ üstte minik kalem butonu */
+#priorityDropdown .dropdown-menu { position: relative; }
+.priority-manage-btn {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  font-size: 14px;
+  color: #6b7280;
+  border: none;
+  background: transparent;
+}
+.priority-manage-btn:hover { color: #111827; }
+
+/* Kategori butonundaki caret kaybolmasın (chips taşsa bile) */
+#categoryDropdown > button.dropdown-toggle { position: relative; padding-right: 32px; overflow: hidden; }
+#categoryDropdown > button.dropdown-toggle::after {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%); margin-left: 0 !important; z-index: 2;
+}
+#categoryDropdown .chips { flex: 1 1 auto; min-width: 0; overflow-x: auto; overflow-y: hidden; display: flex; align-items: center; gap: 8px; }
+#categoryDropdown .chips > span { white-space: nowrap; }
+
+/* (Vardıysa) yatay kaydırmada fade ve scrollbar gizleme kuralların devam etsin */
+
+#taskForm { overflow-anchor: none; }
+
+/* Dropup menünün üstte sabit kalmasına yardımcı olur (gerekirse) */
+.dropup .dropdown-menu {
+  will-change: transform;
+}
